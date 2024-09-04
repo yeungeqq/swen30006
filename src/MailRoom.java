@@ -4,7 +4,7 @@ import static java.lang.String.format;
 
 public class MailRoom {
     public enum Mode {CYCLING, FLOORING}
-    List<Letter>[] waitingForDelivery;
+    List<MailItem>[] waitingForDelivery;
     private final int numRobots;
 
     Queue<Robot> idleRobots;
@@ -25,7 +25,9 @@ public class MailRoom {
         int earliest = Simulation.now() + 1;
         for (int i = 0; i < Building.getBuilding().NUMFLOORS; i++) {
             if (!waitingForDelivery[i].isEmpty()) {
-                int arrival = waitingForDelivery[i].getFirst().myArrival();
+                LinkedList<MailItem> linkedList = (LinkedList<MailItem>) waitingForDelivery[i];
+                MailItem firstItem = linkedList.getFirst();
+                int arrival = firstItem.myArrival();
                 if (earliest > arrival) {
                     floor = i;
                     earliest = arrival;
@@ -35,7 +37,7 @@ public class MailRoom {
         return floor;
     }
 
-    MailRoom(int numFloors, int numRobots) {
+    MailRoom(int numFloors, int numRobots, float capacity) {
         waitingForDelivery = new List[numFloors];
         for (int i = 0; i < numFloors; i++) {
             waitingForDelivery[i] = new LinkedList<>();
@@ -44,16 +46,22 @@ public class MailRoom {
 
         idleRobots = new LinkedList<>();
         for (int i = 0; i < numRobots; i++)
-            idleRobots.add(new Robot(MailRoom.this));  // In mailroom, floor/room is not significant
+            idleRobots.add(new Robot(MailRoom.this, capacity));  // In mailroom, floor/room is not significant
         activeRobots = new ArrayList<>();
         deactivatingRobots = new ArrayList<>();
     }
 
-    void arrive(List<Letter> items) {
-        for (Letter item : items) {
+    void arrive(List<MailItem> items) {
+        for (MailItem item : items) {
             waitingForDelivery[item.myFloor()-1].add(item);
-            System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %d\n",
-                    item.myArrival(), item.myFloor(), item.myRoom(), 0);
+            if (item instanceof Parcel) {
+                Parcel parcel = (Parcel) item;
+                System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %.2f\n",
+                        parcel.myArrival(), parcel.myFloor(), parcel.myRoom(), parcel.myWeight());
+            } else if (item instanceof Letter) {
+                System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %d\n",
+                        item.myArrival(), item.myFloor(), item.myRoom(), 0);
+            }
         }
     }
 
@@ -101,10 +109,27 @@ public class MailRoom {
     }
 
     void loadRobot(int floor, Robot robot) {
-        ListIterator<Letter> iter = waitingForDelivery[floor].listIterator();
+        ListIterator<MailItem> iter = waitingForDelivery[floor].listIterator();
         while (iter.hasNext()) {  // In timestamp order
-            Letter letter = iter.next();
-            robot.add(letter); //Hand it over
+            MailItem item = iter.next();
+            if (item instanceof Letter) {
+                Letter letter = (Letter) item;
+                robot.add(letter); // Hand it over if it is Letter no matter what
+                System.out.println("Letter loaded.");
+            }
+            if (item instanceof Parcel) {
+                Parcel parcel = (Parcel) item;
+                // check the weight limit before hand it over
+                if (parcel.myWeight() <= robot.getCapacity()) {
+                    robot.add(parcel);
+                    // update the capacity of the robot
+                    robot.updateCapacity(parcel.myWeight());
+                    System.out.printf("Parcel loaded. Capacity updated: %f\n", robot.getCapacity());
+                } else {
+                    System.out.printf("Cannot load. Item Weight: %f, Available Capacity: %f\n",
+                        parcel.myWeight(), robot.getCapacity());
+                }
+            }
             iter.remove();
         }
     }
