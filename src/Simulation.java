@@ -79,6 +79,7 @@ public class Simulation {
                 addToArrivals(arrivalTime, new Parcel(floor, room, arrivalTime, weight));
             }
         }
+        Robot.setMailRoom(mailroom);
     }
 
     public static int now() { return time; }

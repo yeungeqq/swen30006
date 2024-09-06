@@ -6,12 +6,19 @@ import java.util.ListIterator;
 
 abstract public class Robot {
     protected static int count = 1;
+
+
     protected static float capacity;
     private static boolean isCapacitySet = false;
+
+    protected static MailRoom mailroom;
+    private static boolean isMailRoomSet = false;
+
+
+
     final protected String id;
     protected int floor;
     protected int room;
-    final protected MailRoom mailroom;
     final protected List<MailItem> items = new LinkedList<>();
 
 
@@ -26,13 +33,23 @@ abstract public class Robot {
         }
     }
 
+    public static void setMailRoom(MailRoom newMailRoom) {
+        if (!isMailRoomSet) {
+            mailroom = newMailRoom;
+            isMailRoomSet = true;  // Mark capacity as set
+            System.out.println("Capacity has been set to: " + capacity);
+        } else {
+            throw new IllegalStateException("Capacity can only be set once.");
+        }
+    }
+
+
     public String toString() {
         return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + 0 ;
     }
 
-    Robot(MailRoom mailroom) {
+    Robot() {
         this.id = "R" + count++;
-        this.mailroom = mailroom;
     }
 
     int getFloor() { return floor; }

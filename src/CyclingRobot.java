@@ -3,7 +3,7 @@ import java.util.LinkedList;
 public class CyclingRobot extends Robot{
 
     CyclingRobot(MailRoom mailroom){
-        super(mailroom);
+        super();
     }
 
 
