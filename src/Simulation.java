@@ -43,11 +43,11 @@ public class Simulation {
         int robotCapacity = Integer.parseInt(properties.getProperty("robot.capacity"));
         timeout = Integer.parseInt(properties.getProperty("timeout"));
         MailRoom.Mode mode = MailRoom.Mode.valueOf(properties.getProperty("mode"));
-
+        Robot.setCapacity((float) robotCapacity);
         Building.initialise(numFloors, numRooms);
         Building building = Building.getBuilding();
         if (mode == MailRoom.Mode.CYCLING){
-            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots, (float) robotCapacity);
+            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots);
             for (int i = 0; i < numLetters; i++) { //Generate letters
                 int arrivalTime = random.nextInt(endArrival)+1;
                 int floor = random.nextInt(building.NUMFLOORS)+1;
@@ -64,7 +64,20 @@ public class Simulation {
         }
 
         else {//if (mode == MailRoom.Mode.FLOORING){
-            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots, (float) robotCapacity);
+            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots);
+            for (int i = 0; i < numLetters; i++) { //Generate letters
+                int arrivalTime = random.nextInt(endArrival)+1;
+                int floor = random.nextInt(building.NUMFLOORS)+1;
+                int room = random.nextInt(building.NUMROOMS)+1;
+                addToArrivals(arrivalTime, new Letter(floor, room, arrivalTime));
+            }
+            for (int i = 0; i < numParcels; i++) { // Generate parcels
+                int arrivalTime = random.nextInt(endArrival)+1;
+                int floor = random.nextInt(building.NUMFLOORS)+1;
+                int room = random.nextInt(building.NUMROOMS)+1;
+                float weight = (float) random.nextInt(maxWeight)+1;
+                addToArrivals(arrivalTime, new Parcel(floor, room, arrivalTime, weight));
+            }
         }
     }
 

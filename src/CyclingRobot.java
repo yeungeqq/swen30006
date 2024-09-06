@@ -2,8 +2,8 @@ import java.util.LinkedList;
 
 public class CyclingRobot extends Robot{
 
-    CyclingRobot(MailRoom mailroom, float capacity){
-        super(mailroom, capacity);
+    CyclingRobot(MailRoom mailroom){
+        super(mailroom);
     }
 
 

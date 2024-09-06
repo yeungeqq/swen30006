@@ -11,11 +11,11 @@ public class CyclingMailRoom extends MailRoom{
     List<Robot> activeRobots;
     List<Robot> deactivatingRobots;
  
-    CyclingMailRoom(int numFloors, int numRobots, float capacity) {
-        super(numFloors, numRobots, capacity); 
+    CyclingMailRoom(int numFloors, int numRobots) {
+        super(numFloors, numRobots); 
         idleRobots = new LinkedList<>();
         for (int i = 0; i < numRobots; i++)
-            idleRobots.add(new CyclingRobot(CyclingMailRoom.this, capacity)); 
+            idleRobots.add(new CyclingRobot(CyclingMailRoom.this)); 
         activeRobots = new ArrayList<>();
         deactivatingRobots = new ArrayList<>();
     }

@@ -33,7 +33,7 @@ abstract public class MailRoom {
         return floor;
     }
 
-    MailRoom(int numFloors, int numRobots, float capacity) {
+    MailRoom(int numFloors, int numRobots) {
         waitingForDelivery = new List[numFloors];
         for (int i = 0; i < numFloors; i++) {
             waitingForDelivery[i] = new LinkedList<>();
