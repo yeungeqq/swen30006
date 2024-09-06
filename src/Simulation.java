@@ -46,19 +46,25 @@ public class Simulation {
 
         Building.initialise(numFloors, numRooms);
         Building building = Building.getBuilding();
-        mailroom = new MailRoom(building.NUMFLOORS, numRobots, (float) robotCapacity);
-        for (int i = 0; i < numLetters; i++) { //Generate letters
-            int arrivalTime = random.nextInt(endArrival)+1;
-            int floor = random.nextInt(building.NUMFLOORS)+1;
-            int room = random.nextInt(building.NUMROOMS)+1;
-            addToArrivals(arrivalTime, new Letter(floor, room, arrivalTime));
+        if (mode == MailRoom.Mode.CYCLING){
+            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots, (float) robotCapacity);
+            for (int i = 0; i < numLetters; i++) { //Generate letters
+                int arrivalTime = random.nextInt(endArrival)+1;
+                int floor = random.nextInt(building.NUMFLOORS)+1;
+                int room = random.nextInt(building.NUMROOMS)+1;
+                addToArrivals(arrivalTime, new Letter(floor, room, arrivalTime));
+            }
+            for (int i = 0; i < numParcels; i++) { // Generate parcels
+                int arrivalTime = random.nextInt(endArrival)+1;
+                int floor = random.nextInt(building.NUMFLOORS)+1;
+                int room = random.nextInt(building.NUMROOMS)+1;
+                float weight = (float) random.nextInt(maxWeight)+1;
+                addToArrivals(arrivalTime, new Parcel(floor, room, arrivalTime, weight));
+            }
         }
-        for (int i = 0; i < numParcels; i++) { // Generate parcels
-            int arrivalTime = random.nextInt(endArrival)+1;
-            int floor = random.nextInt(building.NUMFLOORS)+1;
-            int room = random.nextInt(building.NUMROOMS)+1;
-            float weight = (float) random.nextInt(maxWeight)+1;
-            addToArrivals(arrivalTime, new Parcel(floor, room, arrivalTime, weight));
+
+        else {//if (mode == MailRoom.Mode.FLOORING){
+            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots, (float) robotCapacity);
         }
     }
 
