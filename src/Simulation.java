@@ -43,11 +43,10 @@ public class Simulation {
         int robotCapacity = Integer.parseInt(properties.getProperty("robot.capacity"));
         timeout = Integer.parseInt(properties.getProperty("timeout"));
         MailRoom.Mode mode = MailRoom.Mode.valueOf(properties.getProperty("mode"));
-        Robot.setCapacity((float) robotCapacity);
         Building.initialise(numFloors, numRooms);
         Building building = Building.getBuilding();
         if (mode == MailRoom.Mode.CYCLING){
-            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots);
+            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots, robotCapacity);
             for (int i = 0; i < numLetters; i++) { //Generate letters
                 int arrivalTime = random.nextInt(endArrival)+1;
                 int floor = random.nextInt(building.NUMFLOORS)+1;
@@ -64,7 +63,7 @@ public class Simulation {
         }
 
         else {//if (mode == MailRoom.Mode.FLOORING){
-            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots);
+            mailroom = new FlooringMailRoom(building.NUMFLOORS, numRobots, robotCapacity);
             for (int i = 0; i < numLetters; i++) { //Generate letters
                 int arrivalTime = random.nextInt(endArrival)+1;
                 int floor = random.nextInt(building.NUMFLOORS)+1;

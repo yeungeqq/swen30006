@@ -27,7 +27,6 @@ abstract public class Robot {
         if (!isCapacitySet) {
             capacity = newCapacity;
             isCapacitySet = true;  // Mark capacity as set
-            System.out.println("Capacity has been set to: " + capacity);
         } else {
             throw new IllegalStateException("Capacity can only be set once.");
         }
@@ -37,7 +36,6 @@ abstract public class Robot {
         if (!isMailRoomSet) {
             mailroom = newMailRoom;
             isMailRoomSet = true;  // Mark capacity as set
-            System.out.println("Capacity has been set to: " + capacity);
         } else {
             throw new IllegalStateException("Capacity can only be set once.");
         }
@@ -96,16 +94,22 @@ abstract public class Robot {
         items.add(item);
     }
 
-    public float getCapacity() {
-        return capacity;
-    }
+    // public float getCapacity() {
+    //     return capacity;
+    // }
 
-    public void updateCapacity(float itemWeight) {
-        this.capacity-=itemWeight;
-    }
+    // public void updateCapacity(float itemWeight) {
+    //     this.capacity-=itemWeight;
+    // }
 
     void sort() {
         Collections.sort(items);
     }
+
+    void sortReverse() {
+        // Assuming 'items' is a list that contains the robot's items
+        Collections.sort(items, Collections.reverseOrder());  // Sort in reverse order
+    }
+    
 
 }
