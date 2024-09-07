@@ -1,10 +1,12 @@
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Queue;
 
 abstract public class MailRoom {
     public static enum Mode {CYCLING, FLOORING}
     List<MailItem>[] waitingForDelivery;
+    Queue<Robot> idleRobots;
     private final int numRobots;
 
     public boolean someItems() {

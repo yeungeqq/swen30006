@@ -64,7 +64,7 @@ public class Simulation {
         }
 
         else {//if (mode == MailRoom.Mode.FLOORING){
-            mailroom = new CyclingMailRoom(building.NUMFLOORS, numRobots);
+            mailroom = new FlooringMailRoom(building.NUMFLOORS, numRobots);
             for (int i = 0; i < numLetters; i++) { //Generate letters
                 int arrivalTime = random.nextInt(endArrival)+1;
                 int floor = random.nextInt(building.NUMFLOORS)+1;
