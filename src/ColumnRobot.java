@@ -37,8 +37,6 @@ public class ColumnRobot extends Robot {
                 move(Building.Direction.DOWN);
             }
         } else if (floor == linkedList_item.getFirst().myFloor()) {
-            //setWaiting(true);
-            // Wait for floor robot to initiate transfer
         } else {
             // Move towards the correct floor
             move(Building.Direction.UP);

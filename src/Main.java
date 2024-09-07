@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Main {
-    public static final String DEFAULT_PROPERTIES_PATH = "swen30006/properties/testShort.properties";
+    public static final String DEFAULT_PROPERTIES_PATH = "swen30006/properties/test.properties";
 
     public static Properties loadPropertiesFile(String propertiesFile) {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));

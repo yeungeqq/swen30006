@@ -71,7 +71,7 @@ public class FlooringMailRoom extends MailRoom{
     public void tick() {
         // Floor Robots
         for (FloorRobot activeRobot : floorRobots) {
-            System.out.printf("About to tick: " + activeRobot.toString() + "\n"); activeRobot.tick();
+            System.out.printf("About to tick: " + activeRobot.toString() + "\n");
             activeRobot.tick();
         }
         
