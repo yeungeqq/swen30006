@@ -63,23 +63,26 @@ abstract public class Robot {
         this.room = room;
     }
 
-    abstract void move(Building.Direction direction);
-
-    void transfer(Robot robot) {  // Transfers every item assuming receiving robot has capacity
-        ListIterator<MailItem> iter = robot.items.listIterator();
-        while(iter.hasNext()) {
-            MailItem item = iter.next();
-            if (item instanceof Letter) {
-                this.add(item); //Hand it over if it is Letter no matter what
+    void move(Building.Direction direction) {
+        Building building = Building.getBuilding();
+        int dfloor, droom;
+        switch (direction) {
+            case UP    -> {dfloor = floor+1; droom = room;}
+            case DOWN  -> {dfloor = floor-1; droom = room;}
+            case LEFT  -> {dfloor = floor;   droom = room-1;}
+            case RIGHT -> {dfloor = floor;   droom = room+1;}
+            default -> throw new IllegalArgumentException("Unexpected value: " + direction);
+        }
+        if (!building.isOccupied(dfloor, droom)) { // If destination is occupied, do nothing
+            building.move(floor, room, direction, id);
+            floor = dfloor; room = droom;
+            if (floor == 0) {
+                System.out.printf("About to return: " + this + "\n");
+                mailroom.robotReturn(this);
             }
-            if (item instanceof Parcel) {
-                // check the weight limit before hand it over
-                // update the avaiolable capacity of the robot
-            }
-            iter.remove();
         }
     }
-
+    
     abstract void tick();
     public String getId() {
         return id;
