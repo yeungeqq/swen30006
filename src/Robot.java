@@ -1,41 +1,26 @@
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
+
 
 abstract public class Robot {
     protected static int count = 1;
 
 
-    protected static float capacity;
-    private static boolean isCapacitySet = false;
+    public float capacity;
 
     protected static MailRoom mailroom;
     private static boolean isMailRoomSet = false;
-
-
 
     final protected String id;
     protected int floor;
     protected int room;
     final protected List<MailItem> items = new LinkedList<>();
 
-
-    // Static method to set capacity dynamically, only once
-    public static void setCapacity(float newCapacity) {
-        if (!isCapacitySet) {
-            capacity = newCapacity;
-            isCapacitySet = true;  // Mark capacity as set
-        } else {
-            throw new IllegalStateException("Capacity can only be set once.");
-        }
-    }
-
     public static void setMailRoom(MailRoom newMailRoom) {
         if (!isMailRoomSet) {
             mailroom = newMailRoom;
-            isMailRoomSet = true;  // Mark capacity as set
+            isMailRoomSet = true;  
         } else {
             throw new IllegalStateException("Capacity can only be set once.");
         }
@@ -43,7 +28,7 @@ abstract public class Robot {
 
 
     public String toString() {
-        return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + 0 ;
+        return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + capacity ;
     }
 
     Robot() {
@@ -93,14 +78,6 @@ abstract public class Robot {
     public void add(MailItem item) {
         items.add(item);
     }
-
-    // public float getCapacity() {
-    //     return capacity;
-    // }
-
-    // public void updateCapacity(float itemWeight) {
-    //     this.capacity-=itemWeight;
-    // }
 
     void sort() {
         Collections.sort(items);

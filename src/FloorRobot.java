@@ -78,6 +78,10 @@ public class FloorRobot extends Robot{
                 // On the correct floor
                     // Deliver all relevant items to this room
                     do {
+                        if(linkedList_item.getFirst() instanceof Parcel){
+                            Parcel p = (Parcel) linkedList_item.getFirst();
+                            capacity -= p.myWeight();
+                        }
                         Simulation.deliver(linkedList_item.removeFirst());
                     } while (!linkedList_item.isEmpty() && room == linkedList_item.getFirst().myRoom());  // Deliver all items for this room
             } else {

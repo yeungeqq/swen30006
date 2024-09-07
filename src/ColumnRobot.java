@@ -50,9 +50,14 @@ public class ColumnRobot extends Robot {
 
         while (iter.hasNext()) {
             MailItem item = iter.next();
-
+            
             // Transfer the item to the receiving robot
             receivingRobot.add(item);
+            if (item instanceof Parcel){
+                Parcel p = (Parcel) item;
+                receivingRobot.capacity += p.myWeight();
+                capacity -= p.myWeight();                
+            }
 
             // Remove the item from this robot's list
             iter.remove();

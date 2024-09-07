@@ -39,6 +39,7 @@ abstract public class MailRoom {
         int floor = -1;
         int earliest = Simulation.now() + 1;
         for (int i = 0; i < Building.getBuilding().NUMFLOORS; i++) {
+            // System.out.println(waitingForDelivery[i].toString());
             if (!waitingForDelivery[i].isEmpty()) {
                 LinkedList<MailItem> linkedList = (LinkedList<MailItem>) waitingForDelivery[i];
                 MailItem firstItem = linkedList.getFirst();
@@ -59,18 +60,21 @@ abstract public class MailRoom {
             MailItem item = iter.next();
             if (item instanceof Letter) {
                 Letter letter = (Letter) item;
-                robot.add(letter); // Hand it over if it is Letter no matter what
+                robot.add(letter); 
             }
             else if (item instanceof Parcel) {
                 Parcel parcel = (Parcel) item;
                 // check the weight limit before hand it over
                 if (currentLoad + parcel.myWeight() <= ROBOTCAPACITY) {
+                    currentLoad += parcel.myWeight();
                     robot.add(parcel);
+                    robot.capacity += parcel.myWeight();
+                
                 }
-                else{  System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %.2f\n",
-                item.myArrival(), item.myFloor(), item.myRoom(), parcel.myWeight());}
+                else{  continue;}
             }
             iter.remove();
+            
         }
     }
     
@@ -79,7 +83,7 @@ abstract public class MailRoom {
     public void tick() {
         // Tick all active robots
         for (Robot activeRobot : activeRobots) {
-            System.out.printf("About to tick: " + activeRobot.toString() + "\n");
+            //System.out.printf("About to tick: " + activeRobot.toString() + "\n");
             activeRobot.tick();
         }
     
@@ -173,6 +177,7 @@ abstract public class MailRoom {
         if (!idleRobots.isEmpty() && !Building.getBuilding().isOccupied(0, room)) {
             int fwei = floorWithEarliestItem();
             if (fwei >= 0) {  // If there are items to deliver
+
                 Robot robot = idleRobots.remove();
                 loadRobot(fwei, robot);
     
