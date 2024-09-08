@@ -1,23 +1,15 @@
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Queue;
+import java.util.PriorityQueue;
 
 public class FloorRobot extends Robot{
 
-    private Queue<Building.Direction> columnWaiting = new LinkedList<>();
+    private PriorityQueue<ColumnRobot> columnWaiting = new PriorityQueue<>();
 
-    // private boolean waiting = true;
+    public void addColumnRobot(ColumnRobot columnRobot) {
+        columnWaiting.add(columnRobot);
+    }
 
-    // void setWaiting(boolean newWaiting) {
-    //     System.out.printf("Setting waiting status to %b for robot %s on floor %d, room %d\n", newWaiting, id, floor, room);
-    //     this.waiting = newWaiting;
-    // }
-
-    // boolean getWaiting() {
-    //     System.out.printf("Getting waiting status for robot %s on floor %d, room %d: %b\n", id, floor, room, waiting);
-    //     return this.waiting;
-    // }
-    
     FloorRobot(){
         super();
     }
@@ -42,30 +34,7 @@ public class FloorRobot extends Robot{
         
         // Get the FlooringMailRoom instance
         FlooringMailRoom flooringMailRoom = (FlooringMailRoom) mailroom;
-    
-        // Check if there are any waiting column robots
-        boolean leftInQueue = columnWaiting.contains(Building.Direction.LEFT);
-        boolean rightInQueue = columnWaiting.contains(Building.Direction.RIGHT);
         
-        // Query the mailroom only if the directions are not already in the queue
-        boolean leftWaiting = false;
-        boolean rightWaiting = false;
-        
-        if (!leftInQueue) {
-            leftWaiting = flooringMailRoom.waitingColumnRobot(getFloor(), Building.Direction.LEFT);
-        }
-        
-        if (!rightInQueue) {
-            rightWaiting = flooringMailRoom.waitingColumnRobot(getFloor(), Building.Direction.RIGHT);
-        }
-    
-        // Prioritize column robots based on waiting time and left before right
-        if (leftWaiting && !leftInQueue) {
-            columnWaiting.add(Building.Direction.LEFT);
-        } else if (rightWaiting && !rightInQueue) {
-            columnWaiting.add(Building.Direction.RIGHT);
-        }
-    
         // 1. If no parcels and no waiting robots, do nothing
         if (linkedList_item.isEmpty() && columnWaiting.isEmpty()) {
             // No parcels to deliver and no waiting column robots, so do nothing
@@ -73,7 +42,7 @@ public class FloorRobot extends Robot{
         }
     
         // 2. If there are parcels to deliver, prioritize delivery
-        if (!linkedList_item.isEmpty()) {
+        else if (!linkedList_item.isEmpty()) {
             if (room == linkedList_item.getFirst().myRoom()) {
                 // On the correct floor
                     // Deliver all relevant items to this room
@@ -95,8 +64,8 @@ public class FloorRobot extends Robot{
             }
             }
         // 3. If no parcels but waiting column robots, move towards the column robot
-        if (!columnWaiting.isEmpty()) {
-            Building.Direction direction = columnWaiting.peek();  // Get the direction of the waiting column robot
+        else if (!columnWaiting.isEmpty()) {
+            Building.Direction direction = columnWaiting.peek().COLUMN;  // Get the direction of the waiting column robot
             int targetColumnRoom = (direction == Building.Direction.LEFT) ? 1 : Building.getBuilding().NUMROOMS;
             if(room != targetColumnRoom){
                 move(direction);

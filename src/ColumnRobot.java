@@ -1,17 +1,10 @@
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-public class ColumnRobot extends Robot {
-    private boolean waiting = false;
-
-    void setWaiting(boolean newWaiting) {
-        this.waiting = newWaiting;
-    }
-
-    boolean getWaiting() {
-        return this.waiting;
-    }
-    
+public class ColumnRobot extends Robot implements Comparable<ColumnRobot>{
+    private static int tick = 0;
+    private int waitingSince;
+   
     // Declare COLUMN as a final variable of type Building.Direction
     public final Building.Direction COLUMN;
 
@@ -23,10 +16,11 @@ public class ColumnRobot extends Robot {
         // Initialize COLUMN with the passed direction
         this.COLUMN = direction;
     }
-
+    
     @Override
     void tick() {
-
+        tick++;
+        FlooringMailRoom fl = (FlooringMailRoom) mailroom;
         // Cast items to LinkedList<MailItem> and ensure it's done correctly
         LinkedList<MailItem> linkedList_item = (LinkedList<MailItem>) items;
 
@@ -41,8 +35,9 @@ public class ColumnRobot extends Robot {
             // Move towards the correct floor
             move(Building.Direction.UP);
             if (floor == linkedList_item.getFirst().myFloor()){
-                setWaiting(true);
-                }
+                waitingSince = tick;
+                fl.columnRobotWaiting(floor, this);
+            }
         }
     }
     void transfer(Robot receivingRobot) {
@@ -62,5 +57,23 @@ public class ColumnRobot extends Robot {
             // Remove the item from this robot's list
             iter.remove();
         }
+    }
+    // Implement the compareTo method for PriorityQueue sorting
+    @Override
+    public int compareTo(ColumnRobot otherRobot) {
+        // First, compare based on the waitingSince (tick) value
+        if (this.waitingSince != otherRobot.waitingSince) {
+            return Integer.compare(this.waitingSince, otherRobot.waitingSince);
+        }
+
+        // If the ticks are the same, compare based on COLUMN direction (LEFT comes before RIGHT)
+        if (this.COLUMN == Building.Direction.LEFT && otherRobot.COLUMN == Building.Direction.RIGHT) {
+            return -1; // LEFT comes before RIGHT
+        } else if (this.COLUMN == Building.Direction.RIGHT && otherRobot.COLUMN == Building.Direction.LEFT) {
+            return 1; // RIGHT comes after LEFT
+        }
+
+        // If both have the same direction, they are considered equal
+        return 0;
     }
 }

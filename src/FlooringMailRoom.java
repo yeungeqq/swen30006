@@ -30,25 +30,6 @@ public class FlooringMailRoom extends MailRoom{
         }
     }
     
-    boolean waitingColumnRobot(int floor, Building.Direction direction) {
-        // Iterate over the activeRobots list
-        for (Robot activeRobot : activeRobots) {
-            // Check if the active robot is an instance of ColumnRobot
-            if (activeRobot instanceof ColumnRobot) {
-                ColumnRobot columnRobot = (ColumnRobot) activeRobot;
-    
-                // Check if the direction matches
-                if (columnRobot.COLUMN == direction) {
-                    // Check if the column robot is waiting and at the correct floor
-                    return columnRobot.getWaiting() && columnRobot.getFloor() == floor;
-                }
-            }
-        }
-    
-        // If no matching ColumnRobot was found
-        return false;
-    }
-
     void transfer(Building.Direction direction, FloorRobot floorRobot){
         // Iterate over the activeRobots list
         for (Robot activeRobot : activeRobots) {
@@ -60,7 +41,6 @@ public class FlooringMailRoom extends MailRoom{
                 if (columnRobot.COLUMN == direction) {
                     // Check if the column robot is waiting and at the correct floor
                     columnRobot.transfer(floorRobot);
-                    columnRobot.setWaiting(false);
                 }
             }
         }
@@ -80,5 +60,13 @@ public class FlooringMailRoom extends MailRoom{
 
     }
 
+    public void columnRobotWaiting(int level, ColumnRobot columnRobot){
+        for (FloorRobot floorRobot : floorRobots) {
+            if (floorRobot.getFloor() == level){
+                floorRobot.addColumnRobot(columnRobot);
+                return;
+            }
+        }
+    }
 
 }

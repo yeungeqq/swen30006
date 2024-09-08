@@ -16,9 +16,10 @@ abstract public class MailRoom {
     protected List<Robot> deactivatingRobots; 
 
     // Constructor for MailRoom
+    @SuppressWarnings("unchecked")
     MailRoom(int numFloors, int numRobots, float robotCapacity) {
         // Initialize an array of lists for each floor
-        waitingForDelivery = new List[numFloors];
+        waitingForDelivery = (List<MailItem>[]) new List[numFloors];
         for (int i = 0; i < numFloors; i++) {
             waitingForDelivery[i] = new LinkedList<>();
         }
