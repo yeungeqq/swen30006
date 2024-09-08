@@ -1,26 +1,38 @@
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
-public class Robot {
-    private static int count = 1;
-    private float capacity;
-    final private String id;
-    private int floor;
-    private int room;
-    final private MailRoom mailroom;
-    final private List<MailItem> items = new LinkedList<>();
 
-    public String toString() {
-        return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + 0 ;
+abstract public class Robot {
+    protected static int count = 1;
+
+
+    public float capacity;
+
+    protected static MailRoom mailroom;
+    private static boolean isMailRoomSet = false;
+
+    final protected String id;
+    protected int floor;
+    protected int room;
+    final protected List<MailItem> items = new LinkedList<>();
+
+    public static void setMailRoom(MailRoom newMailRoom) {
+        if (!isMailRoomSet) {
+            mailroom = newMailRoom;
+            isMailRoomSet = true;  
+        } else {
+            throw new IllegalStateException("Capacity can only be set once.");
+        }
     }
 
-    Robot(MailRoom mailroom, float capacity) {
+
+    public String toString() {
+        return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + capacity ;
+    }
+
+    Robot() {
         this.id = "R" + count++;
-        this.mailroom = mailroom;
-        this.capacity = capacity;
     }
 
     int getFloor() { return floor; }
@@ -34,7 +46,7 @@ public class Robot {
         this.room = room;
     }
 
-    private void move(Building.Direction direction) {
+    void move(Building.Direction direction) {
         Building building = Building.getBuilding();
         int dfloor, droom;
         switch (direction) {
@@ -53,55 +65,8 @@ public class Robot {
             }
         }
     }
-
-    void transfer(Robot robot) {  // Transfers every item assuming receiving robot has capacity
-        ListIterator<MailItem> iter = robot.items.listIterator();
-        while(iter.hasNext()) {
-            MailItem item = iter.next();
-            if (item instanceof Letter) {
-                this.add(item); //Hand it over if it is Letter no matter what
-            }
-            if (item instanceof Parcel) {
-                // check the weight limit before hand it over
-                // update the avaiolable capacity of the robot
-            }
-            iter.remove();
-        }
-    }
-
-    void tick() {
-            Building building = Building.getBuilding();
-            LinkedList<MailItem> linkedList_item = (LinkedList<MailItem>) items;
-            if (linkedList_item.isEmpty()) {
-                // Return to MailRoom
-                if (room == building.NUMROOMS + 1) { // in right end column
-                    move(Building.Direction.DOWN);  //move towards mailroom
-                } else {
-                    move(Building.Direction.RIGHT); // move towards right end column
-                }
-            } else {
-                // Items to deliver
-                if (floor == linkedList_item.getFirst().myFloor()) {
-                    // On the right floor
-                    if (room == linkedList_item.getFirst().myRoom()) { //then deliver all relevant items to that room
-                        do {
-                            float itemWeight = 0;
-                            if (linkedList_item.getFirst() instanceof Parcel) {
-                                Parcel parcel = (Parcel) linkedList_item.getFirst();
-                                itemWeight = parcel.myWeight();
-                            }
-                            Simulation.deliver(linkedList_item.removeFirst());
-                            updateCapacity(-itemWeight);
-                        } while (!items.isEmpty() && room == linkedList_item.getFirst().myRoom());
-                    } else {
-                        move(Building.Direction.RIGHT); // move towards next delivery
-                    }
-                } else {
-                    move(Building.Direction.UP); // move towards floor
-                }
-            }
-    }
-
+    
+    abstract void tick();
     public String getId() {
         return id;
     }
@@ -114,16 +79,14 @@ public class Robot {
         items.add(item);
     }
 
-    public float getCapacity() {
-        return capacity;
-    }
-
-    public void updateCapacity(float itemWeight) {
-        this.capacity-=itemWeight;
-    }
-
     void sort() {
         Collections.sort(items);
     }
+
+    void sortReverse() {
+        // Assuming 'items' is a list that contains the robot's items
+        Collections.sort(items, Collections.reverseOrder());  // Sort in reverse order
+    }
+    
 
 }
