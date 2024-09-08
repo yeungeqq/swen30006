@@ -96,7 +96,7 @@ public class Simulation {
             int arrivalTime = random.nextInt(endArrival) + 1;
             int floor = random.nextInt(numFloors) + 1;
             int room = random.nextInt(numRooms) + 1;
-            int weight = random.nextInt(maxWeight) + 1;
+            int weight = (maxWeight > 0) ? random.nextInt(maxWeight) + 1 : 0;
             addToArrivals(arrivalTime, new Parcel(floor, room, arrivalTime, weight));
         }
     }

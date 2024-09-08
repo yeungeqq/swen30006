@@ -9,6 +9,7 @@ import building.Building.Direction;
 import mailitem.Letter;
 import mailitem.MailItem;
 import mailitem.Parcel;
+import robot.CyclingRobot;
 import robot.Robot;
 import simulation.Simulation;
 
@@ -30,7 +31,7 @@ abstract public class MailRoom {
     @SuppressWarnings("unchecked")
     protected MailRoom(int numFloors) {
         // InitialiSe an array of lists to hold mail items for each floor
-        waitingForDelivery = (List<MailItem>[]) new List[numFloors];
+        waitingForDelivery = new List[numFloors];
         for (int i = 0; i < numFloors; i++) {
             waitingForDelivery[i] = new LinkedList<>();
         }
@@ -52,9 +53,7 @@ abstract public class MailRoom {
         int earliest = Simulation.now() + 1; // Initialize to a time in the future
         for (int i = 0; i < Building.getBuilding().NUMFLOORS; i++) {
             if (!waitingForDelivery[i].isEmpty()) {
-                LinkedList<MailItem> linkedList = (LinkedList<MailItem>) waitingForDelivery[i];
-                MailItem firstItem = linkedList.getFirst();
-                int arrival = firstItem.myArrival();
+                int arrival = waitingForDelivery[i].getFirst().myArrival();
                 // Update the floor if an earlier arrival time is found
                 if (earliest > arrival) {
                     floor = i;
@@ -67,7 +66,7 @@ abstract public class MailRoom {
 
     // Method to load a robot with mail items from a specific floor
     private void loadRobot(int floor, Robot robot) {
-        double currentLoad = 0;  // Track the current load on the robot
+        int currentLoad = 0;  // Track the current load on the robot
         ListIterator<MailItem> iter = waitingForDelivery[floor].listIterator();
         while (iter.hasNext()) {  // Iterate through mail items in timestamp order
             MailItem item = iter.next();
@@ -96,6 +95,9 @@ abstract public class MailRoom {
     public void tick() {
         // Update all active robots
         for (Robot activeRobot : activeRobots) {
+            if(activeRobot instanceof CyclingRobot){
+                System.out.printf("About to tick: " + activeRobot.toString() + "\n");
+            }
             activeRobot.tick();
         }
 

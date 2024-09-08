@@ -27,6 +27,7 @@ public class CyclingMailRoom extends MailRoom {
     // Method to handle dispatching idle robots when they are available
     @Override
     protected void handleIdleRobotTick() {
+        // robotDispatch(building.Building.Direction.LEFT);
         if (!idleRobots.isEmpty()) {
             Robot nextIdleRobot = idleRobots.peek();  // Peek at the first idle robot in the queue (but don't remove it)
             Building.Direction direction;
