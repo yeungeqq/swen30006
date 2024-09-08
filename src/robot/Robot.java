@@ -1,6 +1,12 @@
+package robot;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import building.Building;
+import building.Building.Direction;
+import mailitem.MailItem;
+import mailroom.MailRoom;
 
 abstract public class Robot {
     // Static count to generate unique robot IDs
@@ -41,18 +47,18 @@ abstract public class Robot {
     }
 
     // Constructor that assigns a unique ID to the robot
-    Robot() {
+    protected Robot() {
         this.id = "R" + count++;
     }
 
     // Getter method for the current floor of the robot
-    int getFloor() { return floor; }
+    public int getFloor() { return floor; }
 
     // Getter method for the current room of the robot
-    int getRoom() { return room; }
+    public int getRoom() { return room; }
 
     // Checks if the robot is carrying no items
-    boolean isEmpty() { return items.isEmpty(); }
+    public boolean isEmpty() { return items.isEmpty(); }
 
     // Places the robot at a specific location (floor and room) within the building
     public void place(int floor, int room) {
@@ -63,7 +69,7 @@ abstract public class Robot {
     }
 
     // Moves the robot in a specified direction (UP, DOWN, LEFT, RIGHT)
-    void move(Building.Direction direction) {
+    protected void move(Building.Direction direction) {
         Building building = Building.getBuilding();  // Get the building instance
         int dfloor, droom;
         switch (direction) {
@@ -88,7 +94,7 @@ abstract public class Robot {
     }
     
     // Abstract method to be implemented by subclasses, defines the robot's action each tick
-    abstract void tick();
+    abstract public void tick();
 
     // Getter method for the robot's ID
     public String getId() {
@@ -106,7 +112,7 @@ abstract public class Robot {
     }
 
     // Sorts the robot's mail items. If reverse is true, sorts in reverse order.
-    void sortItems(boolean reverse) {
+    public void sortItems(boolean reverse) {
         if (reverse) {
             Collections.sort(items, Collections.reverseOrder());  // Sort in reverse order
         } else {

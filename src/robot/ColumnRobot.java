@@ -1,14 +1,21 @@
+package robot;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import building.Building;
+
+import mailitem.MailItem;
+import mailitem.Parcel;
+import mailroom.FlooringMailRoom;
+import simulation.Simulation;
+
 public class ColumnRobot extends Robot implements Comparable<ColumnRobot>{
-    private static int tick = 0;
     private int waitingSince;
    
     // Declare COLUMN as a final variable of type Building.Direction
     public final Building.Direction COLUMN;
 
-    ColumnRobot(Building.Direction direction) {
+    public ColumnRobot(Building.Direction direction) {
         // Call the parent constructor (super())
         super(); 
 
@@ -17,8 +24,7 @@ public class ColumnRobot extends Robot implements Comparable<ColumnRobot>{
     }
     
     @Override
-    void tick() {
-        tick++;
+    public void tick() {
         FlooringMailRoom fl = (FlooringMailRoom) mailroom;
         // Cast items to LinkedList<MailItem> and ensure it's done correctly
         LinkedList<MailItem> linkedList_item = (LinkedList<MailItem>) items;
@@ -34,13 +40,13 @@ public class ColumnRobot extends Robot implements Comparable<ColumnRobot>{
             // Move towards the correct floor
             move(Building.Direction.UP);
             if (floor == linkedList_item.getFirst().myFloor()){
-                waitingSince = tick;
+                waitingSince = Simulation.now();
                 fl.columnRobotWaiting(floor, this);
             }
         }
     }
     
-    void transfer(Robot receivingRobot) {
+    protected void transfer(Robot receivingRobot) {
         ListIterator<MailItem> iter = this.items.listIterator();  // Iterate over items in the current robot (this)
 
         while (iter.hasNext()) {

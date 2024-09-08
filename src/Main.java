@@ -2,6 +2,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import simulation.Simulation;
+
 public class Main {
     public static final String DEFAULT_PROPERTIES_PATH = "properties/testShort.properties";
 

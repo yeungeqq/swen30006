@@ -1,13 +1,19 @@
+package mailroom;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import building.Building;
+import robot.ColumnRobot;
+import robot.FloorRobot;
+import robot.Robot;
 
 public class FlooringMailRoom extends MailRoom {
     // List to store all floor robots
     private List<FloorRobot> floorRobots = new ArrayList<>();
 
     // Constructor to initialize the FlooringMailRoom with a specific number of floors and robot capacity
-    FlooringMailRoom(int numFloors, float robotCapacity) {
+    public FlooringMailRoom(int numFloors, float robotCapacity) {
         super(numFloors, robotCapacity);
         
         // Initialize the lists for active, deactivating, and idle robots
@@ -55,7 +61,7 @@ public class FlooringMailRoom extends MailRoom {
     }
 
     // Method to handle dispatching idle robots
-    public void handleIdleRobotTick() {
+    protected void handleIdleRobotTick() {
         // If there are idle robots, dispatch them
         if (!idleRobots.isEmpty()) {
             List<Robot> robotsToDispatch = new ArrayList<>(idleRobots);  // Copy the list of idle robots

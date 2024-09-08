@@ -1,13 +1,18 @@
+package robot;
 import java.util.LinkedList;
+
+import building.Building;
+import mailitem.MailItem;
+import simulation.Simulation;
 
 public class CyclingRobot extends Robot {
 
-    CyclingRobot() {
+    public CyclingRobot() {
         super(); 
     }
 
     // This method defines the behavior of the CyclingRobot in each time step (tick)
-    void tick() {
+    public void tick() {
         Building building = Building.getBuilding();  // Get the building instance
         LinkedList<MailItem> linkedList_item = (LinkedList<MailItem>) items;  // Cast items to LinkedList for easy access
 

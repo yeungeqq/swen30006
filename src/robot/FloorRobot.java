@@ -1,5 +1,12 @@
+package robot;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+
+import building.Building;
+import building.Building.Direction;
+import mailitem.MailItem;
+import mailitem.Parcel;
+import simulation.Simulation;
 
 public class FloorRobot extends Robot {
 
@@ -12,12 +19,12 @@ public class FloorRobot extends Robot {
     }
 
     // Constructor for FloorRobot, calls the Robot superclass constructor
-    FloorRobot() {
+    public FloorRobot() {
         super();
     }
 
     // The tick method defines what the robot should do in each time step
-    void tick() {
+    public void tick() {
         // Cast the items list to a LinkedList for easy removal of the first item
         LinkedList<MailItem> linkedList_item = (LinkedList<MailItem>) items;
 
@@ -61,26 +68,5 @@ public class FloorRobot extends Robot {
                 columnWaiting.poll();
             }
         }
-    }
-
-    // Method to check if the FloorRobot is adjacent to a column robot in a specific direction
-    boolean isAdjacentToColumnRobot(Building.Direction direction) {
-        Building building = Building.getBuilding();
-        int floor = this.getFloor();  // Current floor of the robot
-        int room = this.getRoom();    // Current room of the robot
-
-        // Assuming the left ColumnRobot is in room 0, and the right ColumnRobot is in the last room on the floor
-        int leftmostRoom = 0;
-        int rightmostRoom = Building.getBuilding().NUMROOMS + 1;  // Last room number
-
-        if (direction == Building.Direction.LEFT) {
-            // Check if the FloorRobot is adjacent to the left column robot (room 0)
-            return room == leftmostRoom + 1 && !building.isOccupied(floor, leftmostRoom);
-        } else if (direction == Building.Direction.RIGHT) {
-            // Check if the FloorRobot is adjacent to the right column robot (rightmost room)
-            return room == rightmostRoom - 1 && !building.isOccupied(floor, rightmostRoom);
-        }
-
-        return false;  // Return false if the direction is invalid or not adjacent
     }
 }

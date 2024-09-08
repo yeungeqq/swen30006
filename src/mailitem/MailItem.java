@@ -1,3 +1,4 @@
+package mailitem;
 public class MailItem implements Comparable<MailItem> {
 
     // Fields for storing the floor, room, and arrival time of the mail item
@@ -5,7 +6,7 @@ public class MailItem implements Comparable<MailItem> {
     private final int room;
     private final int arrival;
 
-    MailItem(int floor, int room, int arrival) {
+    protected MailItem(int floor, int room, int arrival) {
         this.floor = floor;
         this.room = room;
         this.arrival = arrival;
@@ -24,12 +25,12 @@ public class MailItem implements Comparable<MailItem> {
     }
 
     // Getter method to return the floor of the mail item
-    int myFloor() { return floor; }
+    public int myFloor() { return floor; }
 
     // Getter method to return the room of the mail item
-    int myRoom() { return room; }
+    public int myRoom() { return room; }
 
     // Getter method to return the arrival time of the mail item
-    int myArrival() { return arrival; }
+    public int myArrival() { return arrival; }
 
 }

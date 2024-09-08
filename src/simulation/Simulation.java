@@ -1,5 +1,15 @@
+package simulation;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import building.Building;
+import mailitem.Letter;
+import mailitem.MailItem;
+import mailitem.Parcel;
+import mailroom.CyclingMailRoom;
+import mailroom.FlooringMailRoom;
+import mailroom.MailRoom;
+import robot.Robot;
 
 public class Simulation {
     // Map to keep track of mail items that are waiting to arrive, keyed by their arrival time
@@ -26,7 +36,7 @@ public class Simulation {
     }
 
     // Add a mail item to the list of arrivals at a specific time
-    void addToArrivals(int arrivalTime, MailItem item) {
+    public void addToArrivals(int arrivalTime, MailItem item) {
         System.out.println(item.toString());
         if (waitingToArrive.containsKey(arrivalTime)) {
             waitingToArrive.get(arrivalTime).add(item);
@@ -38,7 +48,7 @@ public class Simulation {
     }
 
     // Constructor for the Simulation class, initializes the mailroom, building, and generates mail items
-    Simulation(Properties properties) {
+    public Simulation(Properties properties) {
         int seed = Integer.parseInt(properties.getProperty("seed"));
         Random random = new Random(seed);  // Seeded random generator for reproducibility
         this.endArrival = Integer.parseInt(properties.getProperty("mail.endarrival"));
@@ -97,7 +107,7 @@ public class Simulation {
     }
 
     // Perform a step in the simulation, advancing time and processing mail arrivals and deliveries
-    void step() {
+    public void step() {
         // Process any mail that is due to arrive at the current time
         if (waitingToArrive.containsKey(time))
             mailroom.arrive(waitingToArrive.get(time));
@@ -107,7 +117,7 @@ public class Simulation {
     }
 
     // Run the entire simulation until all mail items have been delivered
-    void run() {
+    public void run() {
         // Keep running the simulation until all mail has arrived and been delivered
         while (time++ <= endArrival || mailroom.someItems()) {
             step();

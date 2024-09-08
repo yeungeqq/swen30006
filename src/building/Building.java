@@ -1,3 +1,4 @@
+package building;
 import static java.lang.String.format;
 
 public class Building {
@@ -37,23 +38,23 @@ public class Building {
         return singleton;
     }
 
-    boolean isOccupied(int floor, int room) {
+    public boolean isOccupied(int floor, int room) {
         return occupied[floor][room];
     }
 
-    void remove(int floor, int room) {
+    public void remove(int floor, int room) {
         assert occupied[floor][room] : format("remove from unoccupied position floor=%d; room=%d", floor, room);
         occupied[floor][room] = false;
         bg.update(floor, room, "");  // Display
     }
 
-    void place(int floor, int room, String id) {
+    public void place(int floor, int room, String id) {
         assert !occupied[floor][room] : format("place at occupied position floor=%d; room=%d", floor, room);
         occupied[floor][room] = true;
         bg.update(floor, room, id);  // Display
     }
 
-    void move(int floor, int room, Direction direction, String id) {
+    public void move(int floor, int room, Direction direction, String id) {
         assert occupied[floor][room] : format("move from unoccupied position floor=%d; room=%d", floor, room);
         int dfloor, droom;
         switch (direction) {

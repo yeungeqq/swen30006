@@ -1,6 +1,7 @@
+package mailitem;
 public class Letter extends MailItem {
     
-    Letter(int floor, int room, int arrival) {
+    public Letter(int floor, int room, int arrival) {
         super(floor, room, arrival);  // Calls the MailItem constructor
     }
 

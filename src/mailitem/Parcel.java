@@ -1,10 +1,11 @@
+package mailitem;
 public class Parcel extends MailItem {
 
     // The weight of the parcel, which is a final value
     private final int weight;
 
     // Constructor to initialize a Parcel object
-    Parcel(int floor, int room, int arrival, int weight) {
+    public Parcel(int floor, int room, int arrival, int weight) {
         // Call the constructor of the parent class (MailItem)
         super(floor, room, arrival);
         // Set the weight of the parcel
@@ -19,7 +20,7 @@ public class Parcel extends MailItem {
     }
 
     // Method to get the weight of the parcel
-    int myWeight() {
+    public int myWeight() {
         return weight;
     }
 }

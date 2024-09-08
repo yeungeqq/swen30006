@@ -1,9 +1,15 @@
+package mailroom;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import building.Building;
+import robot.ColumnRobot;
+import robot.CyclingRobot;
+import robot.Robot;
+
 public class CyclingMailRoom extends MailRoom {
 
-    CyclingMailRoom(int numFloors, int numRobots, float robotCapacity) {
+    public CyclingMailRoom(int numFloors, int numRobots, float robotCapacity) {
         // Call the parent constructor (MailRoom) to initialize the number of floors and robot capacity
         super(numFloors, robotCapacity);
         
@@ -19,7 +25,8 @@ public class CyclingMailRoom extends MailRoom {
     }
 
     // Method to handle dispatching idle robots when they are available
-    public void handleIdleRobotTick() {
+    @Override
+    protected void handleIdleRobotTick() {
         if (!idleRobots.isEmpty()) {
             Robot nextIdleRobot = idleRobots.peek();  // Peek at the first idle robot in the queue (but don't remove it)
             Building.Direction direction;

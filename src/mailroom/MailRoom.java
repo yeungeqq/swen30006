@@ -1,7 +1,17 @@
+package mailroom;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Queue;
+
+import building.Building;
+import building.Building.Direction;
+import mailitem.Letter;
+import mailitem.MailItem;
+import mailitem.Parcel;
+import robot.Robot;
+import simulation.Simulation;
+
 import static java.lang.String.format;
 
 abstract public class MailRoom {
@@ -21,7 +31,7 @@ abstract public class MailRoom {
 
     // Constructor for MailRoom
     @SuppressWarnings("unchecked")
-    MailRoom(int numFloors, float robotCapacity) {
+    public MailRoom(int numFloors, float robotCapacity) {
         // InitialiSe an array of lists to hold mail items for each floor
         waitingForDelivery = (List<MailItem>[]) new List[numFloors];
         for (int i = 0; i < numFloors; i++) {
@@ -60,7 +70,7 @@ abstract public class MailRoom {
     }
 
     // Method to load a robot with mail items from a specific floor
-    void loadRobot(int floor, Robot robot) {
+    private void loadRobot(int floor, Robot robot) {
         double currentLoad = 0;  // Track the current load on the robot
         ListIterator<MailItem> iter = waitingForDelivery[floor].listIterator();
         while (iter.hasNext()) {  // Iterate through mail items in timestamp order
@@ -84,7 +94,7 @@ abstract public class MailRoom {
         }
     }
 
-    abstract public void handleIdleRobotTick();
+    abstract protected void handleIdleRobotTick();
 
     // Method to handle each simulation tick (update)
     public void tick() {
@@ -118,7 +128,7 @@ abstract public class MailRoom {
     }
 
     // Method to handle the arrival of mail items into the mailroom
-    void arrive(List<MailItem> items) {
+    public void arrive(List<MailItem> items) {
         for (MailItem item : items) {
             // Add item to the appropriate floor's waiting list
             waitingForDelivery[item.myFloor() - 1].add(item);
@@ -135,7 +145,7 @@ abstract public class MailRoom {
     }
 
     // Method to dispatch a robot to deliver items
-    public void robotDispatch(Building.Direction direction) {
+    protected void robotDispatch(Building.Direction direction) {
         System.out.println("Dispatch at time = " + Simulation.now());
 
         // Determine the room based on the direction
