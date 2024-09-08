@@ -1,39 +1,41 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class CyclingMailRoom extends MailRoom{
- 
-    // Constructor for CyclingMailRoom
+public class CyclingMailRoom extends MailRoom {
+
     CyclingMailRoom(int numFloors, int numRobots, float robotCapacity) {
-        // Call the parent constructor to initialize the fields in MailRoom
+        // Call the parent constructor (MailRoom) to initialize the number of floors and robot capacity
         super(numFloors, robotCapacity);
         
-        // Initialise the idleRobots queue and add CyclingRobots to it
+        // Initialise the idleRobots queue and populate it with CyclingRobots
         idleRobots = new LinkedList<>();
         for (int i = 0; i < numRobots; i++) {
-            idleRobots.add(new CyclingRobot());
+            idleRobots.add(new CyclingRobot());  // Add the specified number of CyclingRobots to the idle queue
         }
+        
+        // Initialise lists to track active and deactivating robots
         activeRobots = new ArrayList<>();
         deactivatingRobots = new ArrayList<>();
     }
-    
-    public void handleIdleRobotTick(){
+
+    // Method to handle dispatching idle robots when they are available
+    public void handleIdleRobotTick() {
         if (!idleRobots.isEmpty()) {
-            Robot nextIdleRobot = idleRobots.peek();  // Peek at the first idle robot
+            Robot nextIdleRobot = idleRobots.peek();  // Peek at the first idle robot in the queue (but don't remove it)
             Building.Direction direction;
-            
-            // Determine the direction for the robot
+
+            // Determine the appropriate direction for the robot
             if (nextIdleRobot instanceof ColumnRobot) {
                 ColumnRobot columnRobot = (ColumnRobot) nextIdleRobot;
-                direction = columnRobot.COLUMN;  // Use column direction for ColumnRobot
+                direction = columnRobot.COLUMN;  // Use the specific column direction for a ColumnRobot
             } else if (nextIdleRobot instanceof CyclingRobot) {
-                direction = Building.Direction.LEFT;  // Default direction for CyclingRobot
+                direction = Building.Direction.LEFT;  // Default dispatch direction for CyclingRobots
             } else {
-                direction = Building.Direction.LEFT;  // Default for other robot types
+                direction = Building.Direction.LEFT;  // Default direction for any other robot types
             }
-            robotDispatch(direction);  // Dispatch the robot
+
+            // Dispatch the robot with the determined direction
+            robotDispatch(direction);
         }
     }
-
 }
-

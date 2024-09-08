@@ -1,36 +1,40 @@
 import java.util.LinkedList;
 
-public class CyclingRobot extends Robot{
+public class CyclingRobot extends Robot {
 
-    // Constructor for ColumnRobot that takes a direction
     CyclingRobot() {
         super(); 
     }
-    
+
+    // This method defines the behavior of the CyclingRobot in each time step (tick)
     void tick() {
-        Building building = Building.getBuilding();
-        LinkedList<MailItem> linkedList_item = (LinkedList<MailItem>) items;
+        Building building = Building.getBuilding();  // Get the building instance
+        LinkedList<MailItem> linkedList_item = (LinkedList<MailItem>) items;  // Cast items to LinkedList for easy access
+
+        // 1. If there are no items to deliver, return to the mailroom or move to the rightmost column
         if (linkedList_item.isEmpty()) {
-            // Return to MailRoom
-            if (room == building.NUMROOMS + 1) { // in right end column
-                move(Building.Direction.DOWN);  //move towards mailroom
+            // Check if the robot is at the rightmost end (i.e., room at the last column)
+            if (room == building.NUMROOMS + 1) {
+                move(Building.Direction.DOWN);  // Move down towards the mailroom if at the rightmost column
             } else {
-                move(Building.Direction.RIGHT); // move towards right end column
+                move(Building.Direction.RIGHT);  // Otherwise, keep moving right to reach the rightmost column
             }
         } else {
-            // Items to deliver
+            // 2. If there are items to deliver
+            // Check if the robot is on the correct floor for the first item
             if (floor == linkedList_item.getFirst().myFloor()) {
-                // On the right floor
-                if (room == linkedList_item.getFirst().myRoom()) { //then deliver all relevant items to that room
+                // On the correct floor
+                if (room == linkedList_item.getFirst().myRoom()) {
+                    // Deliver all relevant items to the current room
                     do {
-                        Simulation.deliver(linkedList_item.removeFirst());
-                    } while (!items.isEmpty() && room == linkedList_item.getFirst().myRoom());
+                        Simulation.deliver(linkedList_item.removeFirst());  // Deliver the item
+                    } while (!items.isEmpty() && room == linkedList_item.getFirst().myRoom());  // Continue delivering items for this room
                 } else {
-                    move(Building.Direction.RIGHT); // move towards next delivery
+                    move(Building.Direction.RIGHT);  // Move right towards the next delivery room
                 }
             } else {
-                move(Building.Direction.UP); // move towards floor
+                move(Building.Direction.UP);  // Move up towards the correct floor
             }
         }
-    }    
+    }
 }
