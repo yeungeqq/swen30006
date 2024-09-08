@@ -1,6 +1,6 @@
 public class Parcel extends MailItem{
 
-    private final float weight;
+    private final int weight;
 
     Parcel(int floor, int room, int arrival, int weight) {
         super(floor, room, arrival);
@@ -12,6 +12,6 @@ public class Parcel extends MailItem{
         return super.toString() + ", Weight: " + weight + "kg";
     }
 
-    float myWeight() {return weight;}
+    int myWeight() {return weight;}
     
 }

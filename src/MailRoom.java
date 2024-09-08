@@ -125,7 +125,7 @@ abstract public class MailRoom {
             // Log parcel details
             if (item instanceof Parcel) {
                 Parcel parcel = (Parcel) item;
-                System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %.2f\n",
+                System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %d\n",
                         parcel.myArrival(), parcel.myFloor(), parcel.myRoom(), parcel.myWeight());
             } else if (item instanceof Letter) {
                 System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %d\n",

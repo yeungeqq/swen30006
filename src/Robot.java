@@ -6,7 +6,7 @@ import java.util.List;
 abstract public class Robot {
     protected static int count = 1;
 
-    public float capacity;
+    public int capacity;
 
     protected static MailRoom mailroom;
     private static boolean isMailRoomSet = false;
