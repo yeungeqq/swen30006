@@ -19,8 +19,8 @@ public class FloorRobot extends Robot {
     }
 
     // Constructor for FloorRobot, calls the Robot superclass constructor
-    public FloorRobot() {
-        super();
+    public FloorRobot(int robotCapacity) {
+        super(robotCapacity);
     }
 
     // The tick method defines what the robot should do in each time step

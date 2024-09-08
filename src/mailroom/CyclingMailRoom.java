@@ -9,14 +9,14 @@ import robot.Robot;
 
 public class CyclingMailRoom extends MailRoom {
 
-    public CyclingMailRoom(int numFloors, int numRobots, float robotCapacity) {
-        // Call the parent constructor (MailRoom) to initialize the number of floors and robot capacity
-        super(numFloors, robotCapacity);
+    public CyclingMailRoom(int numFloors, int numRobots, int robotCapacity) {
+        // Call the parent constructor (MailRoom) to initialiSe the number of floors
+        super(numFloors);
         
         // Initialise the idleRobots queue and populate it with CyclingRobots
         idleRobots = new LinkedList<>();
         for (int i = 0; i < numRobots; i++) {
-            idleRobots.add(new CyclingRobot());  // Add the specified number of CyclingRobots to the idle queue
+            idleRobots.add(new CyclingRobot(robotCapacity));  // Add the specified number of CyclingRobots to the idle queue
         }
         
         // Initialise lists to track active and deactivating robots

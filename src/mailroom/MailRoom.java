@@ -21,9 +21,6 @@ abstract public class MailRoom {
     // Array of lists for storing mail items waiting for delivery, indexed by floor
     List<MailItem>[] waitingForDelivery;
     
-    // Constant representing the maximum capacity a robot can carry
-    private final float ROBOTCAPACITY;
-
     // Queues and lists to manage robot states: idle, active, and deactivating
     protected Queue<Robot> idleRobots;
     protected List<Robot> activeRobots;
@@ -31,13 +28,12 @@ abstract public class MailRoom {
 
     // Constructor for MailRoom
     @SuppressWarnings("unchecked")
-    public MailRoom(int numFloors, float robotCapacity) {
+    protected MailRoom(int numFloors) {
         // InitialiSe an array of lists to hold mail items for each floor
         waitingForDelivery = (List<MailItem>[]) new List[numFloors];
         for (int i = 0; i < numFloors; i++) {
             waitingForDelivery[i] = new LinkedList<>();
         }
-        ROBOTCAPACITY = robotCapacity;
     }
 
     // Method to check if there are any mail items waiting for delivery
@@ -82,7 +78,7 @@ abstract public class MailRoom {
             } else if (item instanceof Parcel) {
                 // Check if parcel's weight exceeds robot's capacity
                 Parcel parcel = (Parcel) item;
-                if (currentLoad + parcel.myWeight() <= ROBOTCAPACITY) {
+                if (currentLoad + parcel.myWeight() <= robot.maxCapacity) {
                     currentLoad += parcel.myWeight();
                     robot.add(parcel);
                     robot.capacity += parcel.myWeight();

@@ -12,9 +12,9 @@ public class FlooringMailRoom extends MailRoom {
     // List to store all floor robots
     private List<FloorRobot> floorRobots = new ArrayList<>();
 
-    // Constructor to initialize the FlooringMailRoom with a specific number of floors and robot capacity
-    public FlooringMailRoom(int numFloors, float robotCapacity) {
-        super(numFloors, robotCapacity);
+    // Constructor to initialiSe the FlooringMailRoom with a specific number of floors
+    public FlooringMailRoom(int numFloors, int robotCapacity) {
+        super(numFloors);
         
         // Initialize the lists for active, deactivating, and idle robots
         activeRobots = new ArrayList<>();
@@ -22,15 +22,15 @@ public class FlooringMailRoom extends MailRoom {
         idleRobots = new LinkedList<>();  // Use a LinkedList for managing idle robots
         
         // Create and add ColumnRobots for the LEFT and RIGHT directions to the idle robots queue
-        ColumnRobot leftColumnRobot = new ColumnRobot(Building.Direction.LEFT);
+        ColumnRobot leftColumnRobot = new ColumnRobot(Building.Direction.LEFT, robotCapacity);
         idleRobots.add(leftColumnRobot);
         
-        ColumnRobot rightColumnRobot = new ColumnRobot(Building.Direction.RIGHT);
+        ColumnRobot rightColumnRobot = new ColumnRobot(Building.Direction.RIGHT, robotCapacity);
         idleRobots.add(rightColumnRobot);
 
         // Create and add FloorRobots for each floor
         for (int i = 1; i <= numFloors; i++) {
-            FloorRobot floorRobot = new FloorRobot();
+            FloorRobot floorRobot = new FloorRobot(robotCapacity);
             floorRobot.place(i, 1);  // Place the FloorRobot on the respective floor at room 1
             floorRobots.add(floorRobot);  // Add the FloorRobot to the list
         }

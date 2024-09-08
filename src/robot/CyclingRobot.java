@@ -7,8 +7,8 @@ import simulation.Simulation;
 
 public class CyclingRobot extends Robot {
 
-    public CyclingRobot() {
-        super(); 
+    public CyclingRobot(int robotCapacity) {
+        super(robotCapacity);
     }
 
     // This method defines the behavior of the CyclingRobot in each time step (tick)

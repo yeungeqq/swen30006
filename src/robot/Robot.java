@@ -23,6 +23,8 @@ abstract public class Robot {
 
     // Unique identifier for each robot
     final protected String id;
+
+    public final int maxCapacity;
     
     // Current floor and room location of the robot
     protected int floor;
@@ -47,8 +49,9 @@ abstract public class Robot {
     }
 
     // Constructor that assigns a unique ID to the robot
-    protected Robot() {
+    protected Robot(int robotCapacity) {
         this.id = "R" + count++;
+        maxCapacity = robotCapacity;
     }
 
     // Getter method for the current floor of the robot

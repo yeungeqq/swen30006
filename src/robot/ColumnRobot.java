@@ -15,9 +15,9 @@ public class ColumnRobot extends Robot implements Comparable<ColumnRobot>{
     // Declare COLUMN as a final variable of type Building.Direction
     public final Building.Direction COLUMN;
 
-    public ColumnRobot(Building.Direction direction) {
+    public ColumnRobot(Building.Direction direction, int robotCapacity) {
         // Call the parent constructor (super())
-        super(); 
+        super(robotCapacity); 
 
         // Initialise COLUMN with the passed direction
         this.COLUMN = direction;
