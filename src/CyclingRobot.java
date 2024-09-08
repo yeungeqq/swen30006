@@ -4,10 +4,8 @@ public class CyclingRobot extends Robot{
 
     // Constructor for ColumnRobot that takes a direction
     CyclingRobot() {
-        // Call the parent constructor (super())
         super(); 
     }
-
     
     void tick() {
         Building building = Building.getBuilding();
@@ -25,13 +23,7 @@ public class CyclingRobot extends Robot{
                 // On the right floor
                 if (room == linkedList_item.getFirst().myRoom()) { //then deliver all relevant items to that room
                     do {
-                        // float itemWeight = 0;
-                        // if (linkedList_item.getFirst() instanceof Parcel) {
-                        //     Parcel parcel = (Parcel) linkedList_item.getFirst();
-                        //     itemWeight = parcel.myWeight();
-                        // }
                         Simulation.deliver(linkedList_item.removeFirst());
-                        // updateCapacity(-itemWeight);
                     } while (!items.isEmpty() && room == linkedList_item.getFirst().myRoom());
                 } else {
                     move(Building.Direction.RIGHT); // move towards next delivery

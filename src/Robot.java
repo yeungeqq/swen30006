@@ -6,7 +6,6 @@ import java.util.List;
 abstract public class Robot {
     protected static int count = 1;
 
-
     public float capacity;
 
     protected static MailRoom mailroom;
@@ -25,7 +24,6 @@ abstract public class Robot {
             throw new IllegalStateException("Capacity can only be set once.");
         }
     }
-
 
     public String toString() {
         return "Id: " + id + " Floor: " + floor + ", Room: " + room + ", #items: " + numItems() + ", Load: " + capacity ;
@@ -79,14 +77,11 @@ abstract public class Robot {
         items.add(item);
     }
 
-    void sort() {
-        Collections.sort(items);
+    void sortItems(boolean reverse) {
+        if (reverse) {
+            Collections.sort(items, Collections.reverseOrder());  // Sort in reverse order
+        } else {
+            Collections.sort(items);  // Sort in normal order
+        }
     }
-
-    void sortReverse() {
-        // Assuming 'items' is a list that contains the robot's items
-        Collections.sort(items, Collections.reverseOrder());  // Sort in reverse order
-    }
-    
-
 }

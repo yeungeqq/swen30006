@@ -2,7 +2,7 @@ public class Parcel extends MailItem{
 
     private final float weight;
 
-    Parcel(int floor, int room, int arrival, float weight) {
+    Parcel(int floor, int room, int arrival, int weight) {
         super(floor, room, arrival);
         this.weight = weight;
     }

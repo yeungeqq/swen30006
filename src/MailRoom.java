@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -6,45 +5,51 @@ import java.util.Queue;
 import static java.lang.String.format;
 
 abstract public class MailRoom {
+    // Enum to define the mode of operation for the MailRoom
     public static enum Mode {CYCLING, FLOORING}
+    
+    // Array of lists for storing mail items waiting for delivery, indexed by floor
     List<MailItem>[] waitingForDelivery;
-    private final int numRobots;
+    
+    // Constant representing the maximum capacity a robot can carry
     private final float ROBOTCAPACITY;
 
+    // Queues and lists to manage robot states: idle, active, and deactivating
     protected Queue<Robot> idleRobots;
-    protected List<Robot> activeRobots; 
-    protected List<Robot> deactivatingRobots; 
+    protected List<Robot> activeRobots;
+    protected List<Robot> deactivatingRobots;
 
     // Constructor for MailRoom
     @SuppressWarnings("unchecked")
-    MailRoom(int numFloors, int numRobots, float robotCapacity) {
-        // Initialize an array of lists for each floor
+    MailRoom(int numFloors, float robotCapacity) {
+        // InitialiSe an array of lists to hold mail items for each floor
         waitingForDelivery = (List<MailItem>[]) new List[numFloors];
         for (int i = 0; i < numFloors; i++) {
             waitingForDelivery[i] = new LinkedList<>();
         }
-        this.numRobots = numRobots;
         ROBOTCAPACITY = robotCapacity;
     }
 
+    // Method to check if there are any mail items waiting for delivery
     public boolean someItems() {
         for (int i = 0; i < Building.getBuilding().NUMFLOORS; i++) {
             if (!waitingForDelivery[i].isEmpty()) {
-                    return true;
+                return true;
             }
         }
         return false;
     }
 
+    // Find the floor that has the earliest arriving mail item
     protected int floorWithEarliestItem() {
         int floor = -1;
-        int earliest = Simulation.now() + 1;
+        int earliest = Simulation.now() + 1; // Initialize to a time in the future
         for (int i = 0; i < Building.getBuilding().NUMFLOORS; i++) {
-            // System.out.println(waitingForDelivery[i].toString());
             if (!waitingForDelivery[i].isEmpty()) {
                 LinkedList<MailItem> linkedList = (LinkedList<MailItem>) waitingForDelivery[i];
                 MailItem firstItem = linkedList.getFirst();
                 int arrival = firstItem.myArrival();
+                // Update the floor if an earlier arrival time is found
                 if (earliest > arrival) {
                     floor = i;
                     earliest = arrival;
@@ -54,109 +59,70 @@ abstract public class MailRoom {
         return floor;
     }
 
+    // Method to load a robot with mail items from a specific floor
     void loadRobot(int floor, Robot robot) {
-        double currentLoad = 0;  // Temporary tally of the total load added to the robot
+        double currentLoad = 0;  // Track the current load on the robot
         ListIterator<MailItem> iter = waitingForDelivery[floor].listIterator();
-        while (iter.hasNext()) {  // In timestamp order
+        while (iter.hasNext()) {  // Iterate through mail items in timestamp order
             MailItem item = iter.next();
             if (item instanceof Letter) {
+                // Add letter to robot
                 Letter letter = (Letter) item;
-                robot.add(letter); 
-            }
-            else if (item instanceof Parcel) {
+                robot.add(letter);
+            } else if (item instanceof Parcel) {
+                // Check if parcel's weight exceeds robot's capacity
                 Parcel parcel = (Parcel) item;
-                // check the weight limit before hand it over
                 if (currentLoad + parcel.myWeight() <= ROBOTCAPACITY) {
                     currentLoad += parcel.myWeight();
                     robot.add(parcel);
                     robot.capacity += parcel.myWeight();
-                
+                } else {
+                    continue;  // Skip if parcel exceeds capacity
                 }
-                else{  continue;}
             }
-            iter.remove();
-            
+            iter.remove();  // Remove the item once added to the robot
         }
     }
-    
 
+    abstract public void handleIdleRobotTick();
 
+    // Method to handle each simulation tick (update)
     public void tick() {
-        // Tick all active robots
+        // Update all active robots
         for (Robot activeRobot : activeRobots) {
-            //System.out.printf("About to tick: " + activeRobot.toString() + "\n");
             activeRobot.tick();
         }
-    
-        // Check the direction of the next idle robot
-        if(this instanceof CyclingMailRoom){
-            if (!idleRobots.isEmpty()) {
-                Robot nextIdleRobot = idleRobots.peek();  // Peek at the first robot in the queue
-                Building.Direction direction;
-        
-                // Check if the robot is a ColumnRobot or CyclingRobot
-                if (nextIdleRobot instanceof ColumnRobot) {
-                    // If it's a ColumnRobot, use its COLUMN direction
-                    ColumnRobot columnRobot = (ColumnRobot) nextIdleRobot;
-                    direction = columnRobot.COLUMN;  // Get the COLUMN direction
-                } else if (nextIdleRobot instanceof CyclingRobot) {
-                    // If it's a CyclingRobot, use a default or predefined direction (e.g., LEFT)
-                    direction = Building.Direction.LEFT;  // Default or specific logic for CyclingRobot
-                } else {
-                    // Default case, in case more robot types are added
-                    direction = Building.Direction.LEFT;  // Default direction
-                }
-        
-                // Dispatch a robot if conditions are met
-                robotDispatch(direction);
-            }
-        }
-        else {
-            if (!idleRobots.isEmpty()) {
 
-                // Create a copy of the idleRobots queue to avoid modifying it during iteration
-                List<Robot> robotsToDispatch = new ArrayList<>(idleRobots);
+        handleIdleRobotTick();
 
-                // Iterate through the copy of idle robots
-                for (Robot nextIdleRobot : robotsToDispatch) {
-                    Building.Direction direction = null;
-
-                    // Check if the robot is a ColumnRobot
-                    if (nextIdleRobot instanceof ColumnRobot) {
-                        ColumnRobot columnRobot = (ColumnRobot) nextIdleRobot;
-                        direction = columnRobot.COLUMN;  // Get the COLUMN direction
-                    }
-
-                    // Dispatch the robot if conditions are met
-                    robotDispatch(direction);
-                }
-            }
-        }
-        
-    
-        // Handle returning (deactivating) robots and move them to idleRobots
+        // Handle deactivating robots and move them to idle state
         ListIterator<Robot> iter = deactivatingRobots.listIterator();
-        while (iter.hasNext()) {  // In timestamp order
+        while (iter.hasNext()) {
             Robot robot = iter.next();
             iter.remove();
-            activeRobots.remove(robot);
-            idleRobots.add(robot);
+            activeRobots.remove(robot);  // Remove from active list
+            idleRobots.add(robot);  // Add to idle list
         }
     }
 
+    // Method to handle when a robot returns from delivery
     public void robotReturn(Robot robot) {
         Building building = Building.getBuilding();
         int floor = robot.getFloor();
         int room = robot.getRoom();
-        assert floor == 0 && room == building.NUMROOMS+1: format("robot returning from wrong place - floor=%d, room ==%d", floor, room);
+        // Assertions to ensure robot is returning from the correct location
+        assert floor == 0 && room == building.NUMROOMS + 1 : format("robot returning from wrong place - floor=%d, room ==%d", floor, room);
         assert robot.isEmpty() : "robot has returned still carrying at least one item";
         building.remove(floor, room);
-        deactivatingRobots.add(robot);
+        deactivatingRobots.add(robot);  // Move the robot to deactivating state
     }
 
+    // Method to handle the arrival of mail items into the mailroom
     void arrive(List<MailItem> items) {
         for (MailItem item : items) {
-            waitingForDelivery[item.myFloor()-1].add(item);
+            // Add item to the appropriate floor's waiting list
+            waitingForDelivery[item.myFloor() - 1].add(item);
+            // Log parcel details
             if (item instanceof Parcel) {
                 Parcel parcel = (Parcel) item;
                 System.out.printf("Item: Time = %d Floor = %d Room = %d Weight = %.2f\n",
@@ -168,35 +134,32 @@ abstract public class MailRoom {
         }
     }
 
+    // Method to dispatch a robot to deliver items
     public void robotDispatch(Building.Direction direction) {
         System.out.println("Dispatch at time = " + Simulation.now());
-    
+
         // Determine the room based on the direction
         int room = (direction == Building.Direction.LEFT) ? 0 : Building.getBuilding().NUMROOMS + 1;
-    
-        // Check if there's an idle robot and if there's no traffic jam at the start location
-        if (!idleRobots.isEmpty() && !Building.getBuilding().isOccupied(0, room)) {
-            int fwei = floorWithEarliestItem();
-            if (fwei >= 0) {  // If there are items to deliver
 
-                Robot robot = idleRobots.remove();
-                loadRobot(fwei, robot);
-    
-                // Sort the items based on the direction
+        // Check if there is an idle robot and no traffic jam at the start location
+        if (!idleRobots.isEmpty() && !Building.getBuilding().isOccupied(0, room)) {
+            int fwei = floorWithEarliestItem();  // Get the floor with the earliest mail item
+            if (fwei >= 0) {  // If there are items to deliver
+                Robot robot = idleRobots.remove();  // Get the next idle robot
+                loadRobot(fwei, robot);  // Load the robot with mail items
+
+                // Sort items for delivery based on the direction
                 if (direction == Building.Direction.RIGHT) {
-                    robot.sortReverse();  // Sort in reverse order for right direction
+                    robot.sortItems(true);
                 } else {
-                    robot.sort();  // Sort normally for left direction
+                    robot.sortItems(false); // Normal sort for left direction
                 }
-    
-                activeRobots.add(robot);
+
+                activeRobots.add(robot);  // Add robot to active list
                 System.out.println("Dispatch @ " + Simulation.now() +
                         " of Robot " + robot.getId() + " with " + robot.numItems() + " item(s)");
-                
-                // Place the robot in the correct room
-                robot.place(0, room);
+                robot.place(0, room);  // Place the robot in the start room
             }
         }
     }
-    
 }

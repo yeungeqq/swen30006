@@ -13,7 +13,7 @@ public class ColumnRobot extends Robot implements Comparable<ColumnRobot>{
         // Call the parent constructor (super())
         super(); 
 
-        // Initialize COLUMN with the passed direction
+        // Initialise COLUMN with the passed direction
         this.COLUMN = direction;
     }
     
@@ -40,6 +40,7 @@ public class ColumnRobot extends Robot implements Comparable<ColumnRobot>{
             }
         }
     }
+    
     void transfer(Robot receivingRobot) {
         ListIterator<MailItem> iter = this.items.listIterator();  // Iterate over items in the current robot (this)
 
@@ -58,6 +59,7 @@ public class ColumnRobot extends Robot implements Comparable<ColumnRobot>{
             iter.remove();
         }
     }
+
     // Implement the compareTo method for PriorityQueue sorting
     @Override
     public int compareTo(ColumnRobot otherRobot) {

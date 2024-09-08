@@ -1,5 +1,4 @@
 import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.PriorityQueue;
 
 public class FloorRobot extends Robot{
@@ -14,27 +13,9 @@ public class FloorRobot extends Robot{
         super();
     }
 
-    public void transfer(Robot robot) {  // Transfers every item assuming receiving robot has capacity
-        ListIterator<MailItem> iter = robot.items.listIterator();
-        while(iter.hasNext()) {
-            MailItem item = iter.next();
-            if (item instanceof Letter) {
-                this.add(item); //Hand it over if it is Letter no matter what
-            }
-            if (item instanceof Parcel) {
-                // check the weight limit before hand it over
-                // update the avaiolable capacity of the robot
-            }
-            iter.remove();
-        }
-    }
-
     void tick() {
         LinkedList<MailItem> linkedList_item = (LinkedList<MailItem>) items;
-        
-        // Get the FlooringMailRoom instance
-        FlooringMailRoom flooringMailRoom = (FlooringMailRoom) mailroom;
-        
+                
         // 1. If no parcels and no waiting robots, do nothing
         if (linkedList_item.isEmpty() && columnWaiting.isEmpty()) {
             // No parcels to deliver and no waiting column robots, so do nothing
@@ -71,7 +52,7 @@ public class FloorRobot extends Robot{
                 move(direction);
             }
             else {
-                flooringMailRoom.transfer(direction, this);
+                columnWaiting.peek().transfer(this);
                 columnWaiting.poll();  
             }
         }

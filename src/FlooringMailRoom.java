@@ -5,12 +5,12 @@ import java.util.List;
 public class FlooringMailRoom extends MailRoom{
     private List<FloorRobot> floorRobots = new ArrayList<>();
 
-    FlooringMailRoom(int numFloors, int numRobots, float robotCapacity){
-        super(numFloors, numRobots, robotCapacity);
+    FlooringMailRoom(int numFloors, float robotCapacity){
+        super(numFloors, robotCapacity);
         activeRobots = new ArrayList<>();
         deactivatingRobots = new ArrayList<>();
         
-    // Initialize the idleRobots queue and add CyclingRobots to it
+    // Initialise the idleRobots queue and add CyclingRobots to it
     idleRobots = new LinkedList<>();
 
     // Create and place the ColumnRobot for the LEFT direction
@@ -30,23 +30,6 @@ public class FlooringMailRoom extends MailRoom{
         }
     }
     
-    void transfer(Building.Direction direction, FloorRobot floorRobot){
-        // Iterate over the activeRobots list
-        for (Robot activeRobot : activeRobots) {
-            // Check if the active robot is an instance of ColumnRobot
-            if (activeRobot instanceof ColumnRobot) {
-                ColumnRobot columnRobot = (ColumnRobot) activeRobot;
-    
-                // Check if the direction matches
-                if (columnRobot.COLUMN == direction) {
-                    // Check if the column robot is waiting and at the correct floor
-                    columnRobot.transfer(floorRobot);
-                }
-            }
-        }
-
-    }
-
     @Override
     public void tick() {
         // Floor Robots
@@ -57,7 +40,6 @@ public class FlooringMailRoom extends MailRoom{
         
         // Column Robots
         super.tick();
-
     }
 
     public void columnRobotWaiting(int level, ColumnRobot columnRobot){
@@ -65,6 +47,23 @@ public class FlooringMailRoom extends MailRoom{
             if (floorRobot.getFloor() == level){
                 floorRobot.addColumnRobot(columnRobot);
                 return;
+            }
+        }
+    }
+
+    public void handleIdleRobotTick(){
+        // Dispatch robots for non-cycling mailrooms
+        if (!idleRobots.isEmpty()) {
+            List<Robot> robotsToDispatch = new ArrayList<>(idleRobots);  // Copy idle robots
+            for (Robot nextIdleRobot : robotsToDispatch) {
+                Building.Direction direction = null;
+
+                // Determine the direction for ColumnRobot
+                if (nextIdleRobot instanceof ColumnRobot) {
+                    ColumnRobot columnRobot = (ColumnRobot) nextIdleRobot;
+                    direction = columnRobot.COLUMN;
+                }
+                robotDispatch(direction);  // Dispatch the robot
             }
         }
     }
