@@ -6,6 +6,7 @@ import building.Building;
 import robot.ColumnRobot;
 import robot.CyclingRobot;
 import robot.Robot;
+import simulation.Simulation;
 
 public class CyclingMailRoom extends MailRoom {
 
@@ -44,6 +45,9 @@ public class CyclingMailRoom extends MailRoom {
 
             // Dispatch the robot with the determined direction
             robotDispatch(direction);
+        }
+        else{
+            System.out.println("Dispatch at time = " + Simulation.now());
         }
     }
 }
