@@ -53,7 +53,9 @@ abstract public class MailRoom {
         int earliest = Simulation.now() + 1; // Initialize to a time in the future
         for (int i = 0; i < Building.getBuilding().NUMFLOORS; i++) {
             if (!waitingForDelivery[i].isEmpty()) {
-                int arrival = waitingForDelivery[i].getFirst().myArrival();
+                LinkedList<MailItem> linkedList = (LinkedList<MailItem>) waitingForDelivery[i];
+                MailItem firstItem = linkedList.getFirst();
+                int arrival = firstItem.myArrival();
                 // Update the floor if an earlier arrival time is found
                 if (earliest > arrival) {
                     floor = i;
