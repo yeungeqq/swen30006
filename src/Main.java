@@ -5,7 +5,7 @@ import java.util.Properties;
 import simulation.Simulation;
 
 public class Main {
-    public static final String DEFAULT_PROPERTIES_PATH = "properties/testShort.properties";
+    public static final String DEFAULT_PROPERTIES_PATH = "properties/test_cycling.properties";
 
     public static Properties loadPropertiesFile(String propertiesFile) {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
