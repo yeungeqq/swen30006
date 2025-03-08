@@ -1,3 +1,4 @@
+package building;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -8,7 +9,7 @@ import static java.lang.String.format;
 public class BuildingGrid {
     JFrame f;
     TableModel tm;
-    BuildingGrid(int NUMFLOORS, int NUMROOMS){
+    protected BuildingGrid(int NUMFLOORS, int NUMROOMS){
         f=new JFrame();
         Object objects[][];
         String headings[];
@@ -61,7 +62,7 @@ public class BuildingGrid {
 
         }
 
-    void update(int floor, int room, String s) {
+    protected void update(int floor, int room, String s) {
         String sfinal;
         if (room == 0 || room == Building.getBuilding().NUMROOMS+1) {
             sfinal = s.isEmpty() ? "#" : s;  // ladder
